@@ -13,12 +13,14 @@ def game(score):
         print(f"Die1 = {die1}")
         print(f"Die2 = {die2}")
         d1_d2 = die1 == 1 or die2 == 1
+        temp_score = 0
 
         if not d1_d2:
             temp_score = die1 + die2
             print(f"You scored {temp_score} this round.")
             print("")
         elif d1_d2 and not (die1 == 1 and die2 == 1):
+            temp_score = 0
             print("Oops! You rolled a one your score this round is 0.")
             print("")
             break
@@ -35,7 +37,6 @@ def game(score):
             score += temp_score
             play = False
             print(f"Your score this round was {score}.")
-
     return score, terminate
 
 
