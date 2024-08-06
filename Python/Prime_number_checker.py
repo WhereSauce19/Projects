@@ -16,8 +16,9 @@ while True:
         # Checking if the looped number divides the entered number without remainders
         if n % i == 0:
             prime = False
-        else:
             break
+        else:
+            continue
     # Outputting whether entered number is prime or not
     if prime:
         print(f"{n} is prime.")
