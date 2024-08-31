@@ -23,8 +23,8 @@ def read_ext_fold():
     with open(ext_fold_path, 'r') as ext_fold_file:
         for line in ext_fold_file.readlines():
             line = line.strip()
-            # Ignoring line if it starts with # (for readability).
-            if not(line.startswith('#')):
+            # To only fnd the extensions.
+            if line.startswith('.'):
                 ext, fold = line.split('|')
                 dict1[ext] = fold
     # Returning the created Dictionary.
@@ -68,36 +68,42 @@ def file_organizer(files_dir, dest_dir):
                         counter += 1
                         continue
 
-directories_file_name = "directories.txt"
-directory_file_path = os.path.join(text_files_path, directories_file_name)
-# Creating directories file if it dose'nt exist.
-if not(os.path.exists(directory_file_path)):
-    file = open(directory_file_path, 'w')
-# Opening directories file for reading.
-directories_file = open(directory_file_path, 'r')
-# Reading the default destination directory.
-default_des_dir = directories_file.readline().strip().split('=')[1]
-file_dir = ""
-dest_dir = ""
-directories = {}
-# Reading directories file for file directories and destination directories.
-for line in directories_file.readlines():
-    line = line.strip()
-    # Checking if line has a destination directory.
-    if (line.startswith('>')) and ('|' in line):
-        file_dir, dest_dir = line.split('|')
-        file_dir = file_dir.removeprefix('>')
-    # Checking if line dose'nt have a destination directory.
-    elif (line.startswith('>')) and ('|' not in line):
-        file_dir = line
-        file_dir = file_dir.removeprefix('>')
-        # Using the default destination directory.
-        dest_dir = default_des_dir
-    # Adding file directories and relevant destination directories to Dictionary. 
-    directories[file_dir] = dest_dir
+def read_directories(directory_file_path):
+    # Opening directories file for reading.
+    directories_file = open(directory_file_path, 'r')
+    # Reading the default destination directory.
+    default_des_dir = directories_file.readline().strip().split('=')[1]
+    file_dir = ""
+    dest_dir = ""
+    directories = {}
+    # Reading directories file for file directories and destination directories.
+    for line in directories_file.readlines():
+        line = line.strip()
+        # Checking if line has a destination directory.
+        if (line.startswith('>')) and ('|' in line):
+            file_dir, dest_dir = line.split('|')
+            file_dir = file_dir.removeprefix('>')
+        # Checking if line dose'nt have a destination directory.
+        elif (line.startswith('>')) and ('|' not in line):
+            file_dir = line
+            file_dir = file_dir.removeprefix('>')
+            # Using the default destination directory.
+            dest_dir = default_des_dir
+        # Adding file directories and relevant destination directories to Dictionary. 
+        directories[file_dir] = dest_dir
+    # Closing the directories file.
+    directories_file.close()
+    # Returning the directories Dictionary.
+    return directories
 
-# Using the Dictionary's directories to organize files.
-for file_dir, dest_dir in directories.items():
-    file_organizer(file_dir, dest_dir)
-# Closing the directories file.
-directories_file.close()
+directories_file_name = "directories.txt"
+directories_file_path = os.path.join(text_files_path, directories_file_name)
+try:
+    # Using the Dictionary's directories to organize files.
+    for file_dir, dest_dir in read_directories(directories_file_path).items():
+        file_organizer(file_dir, dest_dir)
+except:
+    # Creating directories file if it dose'nt exist.
+    with open(directories_file_path, 'w') as directories_file:
+        directories_file.write("Default destination directory =")
+        messagebox.showerror("Directory not found.", f"The relevant directories were not found at {directories_file_path}")
