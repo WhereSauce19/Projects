@@ -4,7 +4,6 @@ import math
 tu = turtle.Turtle()
 tu.speed(10)
 x = 10
-tu.forward(x)
 
 for i in range(2, 10**10):
     side = x*(math.sqrt(i))
@@ -12,6 +11,7 @@ for i in range(2, 10**10):
     angle = 180 - math.degrees(math.acos(cos_value))
 
     if i == 2:
+        tu.forward(x)
         tu.left(90)
         tu.forward(x)
         tu.left(angle)
