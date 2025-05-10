@@ -17,6 +17,7 @@ public class Main {
         }
 
         Cell currentCell = grid[0][0];
+        currentCell.left = false;
 
         currentCell.visited = true;
         visitedCells.push(currentCell);
@@ -59,9 +60,58 @@ public class Main {
                 visitedCells.pop();
                 currentCell = visitedCells.peek();
             } else {
-                currentCell = neighbors.get(random.nextInt(0, (neighbors.size())));
+                Cell nextCell = neighbors.get(random.nextInt(0, (neighbors.size())));
+                int nextCellDirection;
+                if (currentCell.x != nextCell.x) {
+                    nextCellDirection = nextCell.x - currentCell.x;
+                    if (nextCellDirection == -1) {
+                        currentCell.left = false;
+                    } else if (nextCellDirection == 1) {
+                        currentCell.right = false;
+                    }
+                    if (currentCell.x != columns - 1) {
+                        currentCell.left = grid[currentCell.x + 1][currentCell.y].right;
+                    }
+
+                } else if (currentCell.y != nextCell.y) {
+                    nextCellDirection = nextCell.y - currentCell.y;
+                    if (nextCellDirection == 1) {
+                        currentCell.down = false;
+                    } else if (nextCellDirection == -1) {
+                        currentCell.up = false;
+                    }
+                    if (currentCell.y != rows - 1) {
+                        currentCell.down = grid[currentCell.x][currentCell.y + 1].up;
+                    }
+                }
+
+                currentCell = nextCell;
                 visitedCells.push(currentCell);
+
             }
+        }
+
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
+                System.out.print("+");
+                if (grid[x][y].up) {
+                    System.out.print("---");
+                } else {
+                    System.out.print("   ");
+                }
+            }
+            System.out.print("+\n");
+
+            for (int x = 0; x < columns; x++) {
+
+                if (grid[x][y].left) {
+                    System.out.print("|   ");
+                } else {
+                    System.out.print("   ");
+                }
+            }
+            System.out.print("\n");
+
         }
 
     }
